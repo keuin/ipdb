@@ -3,7 +3,7 @@ use ipdb::Reader;
 use lazy_static::*;
 
 lazy_static! {
-    static ref IPDB: Reader = { Reader::open_file("ipipfree.ipdb").unwrap() };
+    static ref IPDB: Reader<'static> = { Reader::open_file("ipipfree.ipdb").unwrap() };
 }
 
 fn main() -> Result<()> {

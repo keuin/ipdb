@@ -9,7 +9,7 @@ extern crate lazy_static;
 use ipdb_rs::find;
 
 lazy_static! {
-    static ref IPDB: Reader = { Reader::open_file("ipipfree.ipdb").unwrap() };
+    static ref IPDB: Reader<'static> = { Reader::open_file("ipipfree.ipdb").unwrap() };
 }
 
 macro_rules! bench_all {
