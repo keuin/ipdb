@@ -11,7 +11,7 @@ pub use district::DistrictInfo;
 pub use idc::IdcInfo;
 pub use meta::Meta;
 use std::collections::BTreeMap;
-use std::convert::TryInto;
+use std::convert::{TryFrom, TryInto};
 use std::net::IpAddr;
 use std::path::Path;
 use std::str::FromStr;
@@ -22,18 +22,17 @@ pub struct Reader {
     v4offset: usize,
 }
 
-impl Reader {
-    pub fn open_file<T: AsRef<Path>>(file: T) -> Result<Reader> {
-        let path = file.as_ref();
-        ensure!(path.exists(), "not found ipdb file:{:?}", path);
-        let data = std::fs::read(path)?;
-        let meta_length = u32::from_be_bytes((&data[..4]).try_into()?) as usize + 4;
-        let meta = serde_json::from_str::<Meta>(std::str::from_utf8(&data[4..meta_length])?)?;
+impl TryFrom<&[u8]> for Reader {
+    type Error = Error;
+
+    fn try_from(value: &[u8]) -> std::result::Result<Self, Self::Error> {
+        let meta_length = u32::from_be_bytes((&value[..4]).try_into()?) as usize + 4;
+        let meta = serde_json::from_str::<Meta>(std::str::from_utf8(&value[4..meta_length])?)?;
         ensure!(
-            meta.total_size + meta_length == data.len(),
+            meta.total_size + meta_length == value.len(),
             "database file size error"
         );
-        let data = data[meta_length..].to_vec();
+        let data = value[meta_length..].to_vec();
         let mut node = 0usize;
         for i in 0..96 {
             if node >= meta.node_count {
@@ -53,6 +52,15 @@ impl Reader {
             meta,
             v4offset: node,
         })
+    }
+}
+
+impl Reader {
+    pub fn open_file<T: AsRef<Path>>(file: T) -> Result<Reader> {
+        let path = file.as_ref();
+        ensure!(path.exists(), "not found ipdb file:{:?}", path);
+        let data = std::fs::read(path)?;
+        Self::try_from(data.as_slice())
     }
 
     #[inline]
