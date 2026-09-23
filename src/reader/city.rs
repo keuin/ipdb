@@ -1,29 +1,29 @@
 use serde::Serialize;
 #[derive(Debug, Serialize)]
-pub struct  CityInfo<'a>{
-    pub country_name:&'a str,
-    pub region_name:&'a str,
-    pub city_name:&'a str,
-    pub owner_domain:&'a str,
-    pub isp_domain:&'a str,
-    pub latitude:&'a str,
-    pub longitude:&'a str,
-    pub timezone:&'a str,
-    pub utcoffset:&'a str,
-    pub china_admin_code:&'a str,
-    pub idd_code:&'a str,
-    pub country_code:&'a str,
-    pub continent_code:&'a str,
-    pub idc:&'a str,
-    pub base_station:&'a str,
-    pub country_code3:&'a str,
-    pub european_union:&'a str,
-    pub currency_code:&'a str,
-    pub currency_name:&'a str,
-    pub any_cast:&'a str,
+pub struct CityInfo<'a> {
+    pub country_name: &'a str,
+    pub region_name: &'a str,
+    pub city_name: &'a str,
+    pub owner_domain: &'a str,
+    pub isp_domain: &'a str,
+    pub latitude: &'a str,
+    pub longitude: &'a str,
+    pub timezone: &'a str,
+    pub utcoffset: &'a str,
+    pub china_admin_code: &'a str,
+    pub idd_code: &'a str,
+    pub country_code: &'a str,
+    pub continent_code: &'a str,
+    pub idc: &'a str,
+    pub base_station: &'a str,
+    pub country_code3: &'a str,
+    pub european_union: &'a str,
+    pub currency_code: &'a str,
+    pub currency_name: &'a str,
+    pub any_cast: &'a str,
 }
 
-impl<'a> From<Vec<&'a str>> for  CityInfo<'a>{
+impl<'a> From<Vec<&'a str>> for CityInfo<'a> {
     fn from(buff: Vec<&'a str>) -> Self {
         CityInfo {
             country_name: if buff.len() > 0 { buff[0] } else { "" },
@@ -45,13 +45,13 @@ impl<'a> From<Vec<&'a str>> for  CityInfo<'a>{
             european_union: if buff.len() > 16 { buff[16] } else { "" },
             currency_code: if buff.len() > 17 { buff[17] } else { "" },
             currency_name: if buff.len() > 18 { buff[18] } else { "" },
-            any_cast: if buff.len() > 19 { buff[19] } else { "" }
+            any_cast: if buff.len() > 19 { buff[19] } else { "" },
         }
     }
 }
 
-impl<'a> ToString for CityInfo<'a>{
+impl<'a> ToString for CityInfo<'a> {
     fn to_string(&self) -> String {
-        format!("{:?}",self)
+        format!("{:?}", self)
     }
 }

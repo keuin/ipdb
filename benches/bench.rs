@@ -1,42 +1,39 @@
 #![feature(test)]
 extern crate test;
 
-
-use test::Bencher;
 use ipdb::Reader;
+use test::Bencher;
 
 #[macro_use]
 extern crate lazy_static;
 use ipdb_rs::find;
 
-lazy_static!{
-    static ref IPDB:Reader={
-        Reader::open_file("ipipfree.ipdb").unwrap()
-    };
+lazy_static! {
+    static ref IPDB: Reader = { Reader::open_file("ipipfree.ipdb").unwrap() };
 }
 
 macro_rules! bench_all {
     ($cap:literal) => {
         use super::*;
         #[bench]
-        fn test_ipdb(b: &mut Bencher){
-            b.iter(move ||{
-                for _ in 0..$cap{
+        fn test_ipdb(b: &mut Bencher) {
+            b.iter(move || {
+                for _ in 0..$cap {
                     IPDB.find("58.250.137.36", "CN").unwrap();
                 }
             });
         }
 
         #[bench]
-        fn test_ipdb_rs(b: &mut Bencher){
-            b.iter(move ||{
-                  for _ in 0..$cap{
+        fn test_ipdb_rs(b: &mut Bencher) {
+            b.iter(move || {
+                for _ in 0..$cap {
                     find("58.250.137.36", "CN").unwrap();
-                  }
+                }
             });
         }
-
-    }}
+    };
+}
 
 mod bench8000 {
     bench_all!(8000);
